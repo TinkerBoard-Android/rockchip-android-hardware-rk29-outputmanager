@@ -113,5 +113,13 @@ interface IRkOutputManager{
     @callflow(next={"*"})
     updateDispHeader() generates (Result error);
 
-};
+    @callflow(next={"*"})
+    getModeState(string mode) generates (Result error, string state);
 
+    @callflow(next={"*"})
+    setModeState(string mode, string state) generates (Result error);
+
+    @callflow(next={"*"})
+    getHdrResolutionSupported(Display display, string mode) generates (Result error, uint32_t supported);
+
+};

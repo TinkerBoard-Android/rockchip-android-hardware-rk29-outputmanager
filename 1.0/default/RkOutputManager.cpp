@@ -355,7 +355,46 @@ Return<void> RkOutputManager::hotPlug()
     return Void();
 }
 
-IRkOutputManager* HIDL_FETCH_IRkOutputManager(const char* /* name */) {
+Return<void> RkOutputManager::getModeState(const hidl_string& mode, getModeState_cb _hidl_cb)
+{
+    Result res = Result::UNKNOWN;
+    hidl_string state = 0;
+    char tmpPriority[256];
+    int ret = mHwOutput->getModeState(mHwOutput, mode.c_str(), tmpPriority);
+    if (ret == 0)
+    {
+        res = Result::OK;
+    }
+    state = tmpPriority;
+    _hidl_cb(res, state);
+    return Void();
+}
+
+Return<Result> RkOutputManager::setModeState(const hidl_string& mode, const hidl_string& state)
+{
+    Result res = Result::UNKNOWN;
+    int ret = mHwOutput->setModeState(mHwOutput, mode.c_str(), state.c_str());
+    if(ret == 0){
+        res = Result::OK;
+    }
+    return res;
+}
+
+Return<void> RkOutputManager::getHdrResolutionSupported(Display display, const hidl_string &mode, getHdrResolutionSupported_cb _hidl_cb)
+{
+    Result res = Result::UNKNOWN;
+    uint32_t supported = 0;
+    int ret = mHwOutput->getHdrResolutionSupported(mHwOutput, display, mode.c_str(), &supported);
+    if (ret == 0)
+    {
+        res = Result::OK;
+    }
+    _hidl_cb(res, supported);
+    return Void();
+}
+
+IRkOutputManager *HIDL_FETCH_IRkOutputManager(const char * /* name */)
+{
     struct hw_output_device*   mHwOutput;
     const hw_module_t* hw_module = nullptr;
     int ret = hw_get_module(HW_OUTPUT_HARDWARE_MODULE_ID, &hw_module);
